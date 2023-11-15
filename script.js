@@ -23,8 +23,9 @@ function gridNumberAndSize(){
     heightWidth=500/rangeval;
 }
 
+// ... (rest of your functions)
 
-// loop for creating the 16x16 grid by default when page is loaded
+// loop for creating the 16x16 grid by default when the page is loaded
 for(let i=0; i<256; i++){
     let divs=document.createElement('div');
     divs.classList.add('new');
@@ -37,36 +38,22 @@ for(let i=0; i<256; i++){
     });
 }
 
-// if user chooses to change the range the new grid gets drawn 
+// if the user chooses to change the range the new grid gets drawn 
 range.oninput = () => {
-    
     gridNumberAndSize(); 
-   
     for(let i=0; i<nbOfDivs; i++){
         let divs=document.createElement('div');
         divs.classList.add('new');
         divs.style.cssText = `height:${heightWidth}px; width:${heightWidth}px ;`;
-
         sideRightContainer.appendChild(divs);
-
-        
         divs.addEventListener('mouseover', function (e) {
             e.target.style.background=currentColor;
         });
-        
     }
-    
 };
 
-
 // buttons event listener
-
-// ColorPicker circle: (color chosen used in the color mode)
-
 colorPicker.addEventListener('mouseout',() => currentColor=colorPicker.value);
-
-
-// color mode button:
 
 function colorMode(){
     currentColor=colorPicker.value;
@@ -75,7 +62,6 @@ function colorMode(){
 }
 colorModeBtn.addEventListener('click',colorMode);
 
-// Erase button:
 function erase(){
     currentColor="white";
     eraseBtn.style.cssText = "background-color:#333333;color:white;";
@@ -83,16 +69,18 @@ function erase(){
 } 
 eraseBtn.addEventListener('click',erase);
 
-
-// Clear button: 
 function clearGrid(){
     const divs = document.querySelectorAll('.new');
     divs.forEach((div) => {
     div.style.background = 'white';
   });
-  
 }
 clearBtn.addEventListener('click',clearGrid);
 
-
-
+// Exporting the functions at the end of the file
+module.exports = {
+    gridNumberAndSize,
+    erase,
+    colorMode,
+    clearGrid,
+};
