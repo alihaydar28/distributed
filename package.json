@@ -5,14 +5,17 @@
   "main": "script.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "test1": "jest"
+    "test1": "jest",
+    "build": "webpack --mode production"  
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "jest": "^29.7.0",
-    "jest-environment-jsdom": "^29.7.0"
+    "jest-environment-jsdom": "^29.7.0",
+    "webpack": "^5.69.1",   
+    "webpack-cli": "^4.9.1" 
   },
   "jest": {
     "testEnvironment": "jsdom",
