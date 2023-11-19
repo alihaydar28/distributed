@@ -4,16 +4,14 @@ on:
   push:
     branches:
       - main
+
 jobs:
-  build:
+  build_and_deploy:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-
-      - name: Display directory content
-        run: ls -R
 
       - name: Show npm version
         run: npm --version
@@ -44,5 +42,23 @@ jobs:
           context: .
           push: true
           tags:  ${{ secrets.DOCKER_USERNAME }}/dockerimage:${{ github.sha }}
+
+      - name: Deploy to AWS EC2 instance
+        uses: easingthemes/ssh-deploy@main
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
+          REMOTE_HOST: ${{ secrets.HOST_DNS }}
+          REMOTE_USER: ${{ secrets.USERNAME }}
+        with:
+          script: |
+            # Pull the Docker image from Docker Hub
+            docker pull ${{ secrets.DOCKER_USERNAME }}/dockerimage:${{ github.sha }}
+
+            # Stop and remove the existing Docker container (if it exists)
+            docker stop dockerimage || true
+            docker rm dockerimage || true
+
+            # Run the new Docker container, exposing the application's port
+            docker run -d --name dockerimage -p 8080:80 ${{ secrets.DOCKER_USERNAME}}/dockerimage:${{ github.sha }}
 
 
