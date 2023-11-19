@@ -37,3 +37,239 @@
 
 </body>
 </html>
+
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+*{
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+body{
+    background-color: #ededed;
+    font-family: 'Roboto' , sans-serif ;
+    
+}
+
+
+
+h1{
+    color: #333;
+    font-size: 80px;
+    text-align: center;
+    line-height: 1.2;
+    padding: 40px;
+}
+
+.container{
+    width: 80%;
+    margin-left: 10%;
+    margin-right: 10%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 100px;
+}
+
+.sideLeft{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+}
+
+.sideLeft #favcolor{
+    border-color: transparent;
+    width: 90px;
+    height: 90px;
+    cursor: pointer;
+    transition:transform 0.1s ease-in-out;
+}
+
+input[type='color']::-webkit-color-swatch {
+    border: none;
+    border-radius: 50px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+.sideLeft button{
+    width:200px;
+    height: 45px;
+    font-size: 17px;
+    color: #333;
+   box-sizing: border-box; 
+   cursor: pointer;
+   border: 1px solid #333;
+   border-radius: 5px;
+   transition:transform 0.1s ease-in-out;
+}
+
+.sideLeft #favcolor:hover{
+    transform: scale(1.05);
+}
+
+.sideLeft button:hover{
+    transform: scale(1.05);
+}
+.sideLeft button:first-of-type{
+    background-color: #333;
+    color: #fefefe;
+}
+
+.sideRight{
+    background-color: #fefefe;
+    height: 500px;
+    width: 500px;
+    flex-shrink: 0;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.range .slider{
+    width: 200px;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.range p{
+    font-size: 20px;
+    color: #333;
+    padding-bottom: 5px;
+}
+
+input[type='range'] {
+    -webkit-appearance: none;
+    background-color: #ededed;
+  }
+  
+  input[type='range']::-webkit-slider-runnable-track {
+    height: 10px;
+    border: 1px solid #333;
+    border-radius: 25px;
+    background: #ededed;
+  }
+  
+  input[type='range']::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 25px;
+    margin-top: -8px;
+    background: #333;
+  }
+
+
+  /*
+  footer{
+    position:absolute;
+    bottom: 0;
+    left: 0;
+    padding-bottom:10px ;
+    color: #333;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
+ 
+  */
+
+
+  .new{
+  
+    padding:0; 
+    margin:0;
+    border:0;
+  }
+  
+</style>
+
+<script>
+
+const sideRightContainer= document.querySelector('.sideRight');
+const range=document.querySelector('#myRange');
+const rangeText=document.querySelector('.demo');
+const colorModeBtn=document.querySelector('.colorModeBtn');
+const clearBtn=document.querySelector('.clearBtn');
+const eraseBtn=document.querySelector('.eraseBtn');
+const colorPicker=document.querySelector('#favcolor');
+
+let currentColor="#333"; // by default #333 but can changed using color picker
+
+let nbOfDivs=0; // to be drawn in the box
+let heightWidth=0; // size of each of these divs
+let rangeval=0; // level of slider
+
+// gets the range(ex: 16 x 16), clear drawing, gets new nb of divs with their sizes 
+function gridNumberAndSize(){
+    rangeval=range.value;
+    rangeText.textContent=`${rangeval} x ${rangeval}`;
+
+    sideRightContainer.textContent='';
+
+    nbOfDivs=rangeval*rangeval;
+    heightWidth=500/rangeval;
+}
+
+// ... (rest of your functions)
+
+// loop for creating the 16x16 grid by default when the page is loaded
+for(let i=0; i<256; i++){
+    let divs=document.createElement('div');
+    divs.classList.add('new');
+    divs.style.cssText = `height:${500/16}px; width:${500/16}px ;`;
+    sideRightContainer.appendChild(divs);
+
+    divs.addEventListener('mouseover', function (e) {
+        //console.log(e.target);
+        e.target.style.background=currentColor;
+    });
+}
+
+// if the user chooses to change the range the new grid gets drawn 
+range.oninput = () => {
+    gridNumberAndSize(); 
+    for(let i=0; i<nbOfDivs; i++){
+        let divs=document.createElement('div');
+        divs.classList.add('new');
+        divs.style.cssText = `height:${heightWidth}px; width:${heightWidth}px ;`;
+        sideRightContainer.appendChild(divs);
+        divs.addEventListener('mouseover', function (e) {
+            e.target.style.background=currentColor;
+        });
+    }
+};
+
+// buttons event listener
+colorPicker.addEventListener('mouseout',() => currentColor=colorPicker.value);
+
+function colorMode(){
+    currentColor=colorPicker.value;
+    colorModeBtn.style.cssText = "background-color:#333333;color:white;";
+    eraseBtn.style.cssText = "background-color:#ededed;color:#333;";
+}
+colorModeBtn.addEventListener('click',colorMode);
+
+function erase(){
+    currentColor="white";
+    eraseBtn.style.cssText = "background-color:#333333;color:white;";
+    colorModeBtn.style.cssText = "background-color:#ededed;color:#333;";
+} 
+eraseBtn.addEventListener('click',erase);
+
+function clearGrid(){
+    const divs = document.querySelectorAll('.new');
+    divs.forEach((div) => {
+    div.style.background = 'white';
+  });
+}
+clearBtn.addEventListener('click',clearGrid);
+
+
+</script>
