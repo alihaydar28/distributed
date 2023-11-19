@@ -39,8 +39,10 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build and push Docker image
-        run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/dockerimage:latest .
-          docker push ${{ secrets.DOCKER_USERNAME }}/dockerimage:latest
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          tags:  ${{ secrets.DOCKER_USERNAME }}/dockerimage:${{ github.sha }}
 
 
