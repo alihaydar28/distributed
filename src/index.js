@@ -77,10 +77,3 @@ function clearGrid(){
 }
 clearBtn.addEventListener('click',clearGrid);
 
-// Exporting the functions at the end of the file
-module.exports = {
-    gridNumberAndSize,
-    erase,
-    colorMode,
-    clearGrid,
-};
