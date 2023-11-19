@@ -30,7 +30,7 @@ jobs:
         run: npm run build
 
       - name: Run tests
-        run: echo "No tests specified"
+        run: npm run test
 
         env:
           AWS_REGION: eu-central-1
