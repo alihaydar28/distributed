@@ -30,37 +30,16 @@ jobs:
       - name: Run tests
         run: npm run test
 
-      - name: Login to Docker Hub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-        
-
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v2
-        with:
-          context: .
-          push: true
-          tags:  ${{ secrets.DOCKER_USERNAME }}/dockerimage:latest
-        
-
-      - name: Deploy to AWS EC2 instance
-        uses: easingthemes/ssh-deploy@main
+      - uses: actions/checkout@v3
+      - name: Login Dockerhub
         env:
-          SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
-          REMOTE_HOST: ${{ secrets.HOST_DNS }}
-          REMOTE_USER: ${{ secrets.USERNAME }}
-        with:
-          script: |
-            # Pull the Docker image from Docker Hub
-            docker pull ${{ secrets.DOCKER_USERNAME }}/dockerimage:latest
-
-            # Stop and remove the existing Docker container (if it exists)
-            docker stop dockerimage || true
-            docker rm dockerimage || true
-
-            # Run the new Docker container, exposing the application's port
-            docker run -d --name dockerimage -p 8080:80 ${{ secrets.DOCKER_USERNAME}}/dockerimage:latest
-
+          DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}}
+          DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
+        run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+        
+      - name: Build the Docker image
+        run: docker build -t ${{secrets.DOCKER_USERNAME}}/cicd-pipeline .
+      - name: Push to Dockerhub
+        run: docker push ${{secrets.DOCKER_USERNAME}}/cicd-pipeline:latest
+        
 
